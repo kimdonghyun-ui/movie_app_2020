@@ -1,42 +1,34 @@
 import React from 'react';
+import axios from 'axios';
 
-
-function Food({ name,picture }) {
-  return (
-    <div>
-      <h2>I love {name}</h2>
-      <img src={picture} alt="이미지" />
-  </div>
-  );
-}
-
-const foodILike = [
-  {
-    name: 'Kimchi',
-    image: 'https://re-dev.eyes.co.kr/assets/images/all/logo.png'
-  },
-  {
-    name: 'Samgyeopsal',
-    image: 'https://re-dev.eyes.co.kr/assets/images/all/logo.png'
-  },
-  {
-    name: 'Bibimbap',
-    image: 'https://re-dev.eyes.co.kr/assets/images/all/logo.png'
-  },
-  {
-    name: 'Doncasu',
-    image: 'https://re-dev.eyes.co.kr/assets/images/all/logo.png'
+class App extends React.Component {
+  state = {
+    isLoading: true,
+    movies:[],
   }
-];
+  getMovies = async () => {
+    const {
+      data: {
+        data: {movies},
+      }
+    } = await axios.get('https://yts-proxy.now.sh/list_movies.json');
+    // console.log(movies);
+    this.setState({ movies,isLoading: false });
+  }
 
-function App() {
-  return (
-    <div>
-      {foodILike.map((dish,index) => (
-        <Food name={dish.name} picture={dish.image} key={index} />
-      ))}
-    </div>
-  );
+  componentDidMount() {
+    //영화 데이터 로딩!
+    //https://yts.mx/api/v2/movie_details.json?movie_id=1
+    this.getMovies();
+  }
+  render() {
+    const { isLoading } = this.state;
+    return (
+      <div>
+        { isLoading ? 'Loading...' : 'We are ready' }
+      </div>
+    )
+  }
 }
 
 export default App;
